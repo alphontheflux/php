@@ -1,7 +1,8 @@
 services:
-  # Service PHP + Apache
   php:
-    image: php:8.2-apache
+    build:
+      context: .
+      dockerfile: Dockerfile
     platform: linux/arm64
     container_name: rpg_php
     ports:
@@ -10,12 +11,7 @@ services:
       - ./src:/var/www/html
     depends_on:
       - mysql
-    command: >
-      bash -c "docker-php-ext-install pdo pdo_mysql mysqli
-      && a2enmod rewrite
-      && apache2-foreground"
 
-  # Service MySQL
   mysql:
     image: mysql:8.0
     platform: linux/arm64
@@ -28,7 +24,6 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
 
-  # Service phpMyAdmin
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: rpg_phpmyadmin
@@ -41,6 +36,5 @@ services:
     depends_on:
       - mysql
 
-# Volume pour persister les données MySQL
 volumes:
   mysql_data:
